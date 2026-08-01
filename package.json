@@ -1,0 +1,15 @@
+{
+  "name": "browserslop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A playful, customizable Chromium new-tab dashboard.",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "package": "npm run build && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

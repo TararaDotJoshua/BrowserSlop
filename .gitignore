@@ -1,0 +1,10 @@
+dist/
+release/
+node_modules/
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+Thumbs.db
+.DS_Store

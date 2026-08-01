@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f5f9" />
+    <title>BrowserSlop</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="bg-particles" aria-hidden="true"></canvas>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <div class="top-actions">
+      <button class="icon-btn" id="edit-toggle" title="Edit widgets" aria-label="Edit widgets">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="7" height="7" rx="2" />
+          <rect x="13.5" y="3.5" width="7" height="7" rx="2" />
+          <rect x="3.5" y="13.5" width="7" height="7" rx="2" />
+          <path d="M17 13.5v7M13.5 17h7" />
+        </svg>
+      </button>
+      <button class="icon-btn" id="settings-toggle" title="Settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3.2" />
+          <path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.5-2-3.4-2.3 1a7.7 7.7 0 0 0-2.6-1.5L14 2.5h-4l-.5 2.6a7.7 7.7 0 0 0-2.6 1.5l-2.3-1-2 3.4 2 1.5a7.6 7.6 0 0 0 0 3l-2 1.5 2 3.4 2.3-1a7.7 7.7 0 0 0 2.6 1.5l.5 2.6h4l.5-2.6a7.7 7.7 0 0 0 2.6-1.5l2.3 1 2-3.4Z" />
+        </svg>
+      </button>
+    </div>
+
+    <main class="dashboard">
+      <header class="hero" id="hero">
+        <h1 id="greeting">Good morning.</h1>
+        <form class="search" id="search-form">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m21 21-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+          </svg>
+          <input id="search-input" autocomplete="off" autofocus placeholder="Search Google" aria-label="Search Google" />
+          <span class="search-mode" id="search-mode" aria-hidden="true">Google</span>
+          <span class="sr-only" id="search-status" aria-live="polite"></span>
+        </form>
+      </header>
+
+      <section class="widget-grid" id="grid" aria-label="Dashboard widgets"></section>
+    </main>
+
+    <div class="gallery" id="gallery" aria-label="Widget gallery">
+      <div class="gallery-head">
+        <div>
+          <strong>Widget gallery</strong>
+          <span class="gallery-hint">Drag widgets to rearrange &middot; pull the corner to resize</span>
+        </div>
+        <button class="done-button" id="edit-done">Done</button>
+      </div>
+      <div class="gallery-list scroll" id="gallery-list"></div>
+    </div>
+
+    <div class="scrim" id="scrim" hidden></div>
+
+    <section class="onboarding" id="onboarding" role="dialog" aria-modal="true"
+      aria-labelledby="onboarding-title" aria-describedby="onboarding-copy" hidden>
+      <div class="onboarding-mark" aria-hidden="true"><img src="icons/icon128.png" alt="" /></div>
+      <p class="onboarding-kicker">BrowserSlop</p>
+      <h2 id="onboarding-title">Make your new tab yours.</h2>
+      <p id="onboarding-copy">A calmer place for focus, plans, and whatever you need next.</p>
+      <div class="onboarding-step" data-onboarding-step="1">
+        <ul class="onboarding-benefits">
+          <li><span aria-hidden="true">&#10024;</span><b>Start useful</b><small>Calendar, tasks, focus, and weather are ready to go.</small></li>
+          <li><span aria-hidden="true">&#127912;</span><b>Shape the vibe</b><small>Pick a theme now. Change everything later in Settings.</small></li>
+          <li><span aria-hidden="true">&#128274;</span><b>Keep it yours</b><small>Your layout and widget data stay in this browser.</small></li>
+        </ul>
+      </div>
+      <div class="onboarding-step" data-onboarding-step="2" hidden>
+        <fieldset class="onboarding-fieldset">
+          <legend>Choose a theme</legend>
+          <div class="onboarding-themes" id="onboarding-themes">
+            <button type="button" data-onboarding-theme="auto">Auto</button>
+            <button type="button" data-onboarding-theme="light">Light</button>
+            <button type="button" data-onboarding-theme="dark">Dark</button>
+          </div>
+        </fieldset>
+        <fieldset class="onboarding-fieldset">
+          <legend>Choose an accent</legend>
+          <div class="onboarding-accents" id="onboarding-accents"></div>
+        </fieldset>
+        <p class="onboarding-note">Google and X are optional. Connect them any time from Settings.</p>
+      </div>
+      <div class="onboarding-step" data-onboarding-step="3" hidden>
+        <div class="onboarding-ready" aria-hidden="true">&#10003;</div>
+        <strong>Your dashboard is ready.</strong>
+        <span>Search, focus, rearrange widgets, or open Settings to keep customizing.</span>
+      </div>
+      <div class="onboarding-actions">
+        <button class="onboarding-skip" id="onboarding-skip" type="button">Skip setup</button>
+        <div class="onboarding-dots" aria-label="Setup progress"><i class="is-active"></i><i></i><i></i></div>
+        <button class="primary-button" id="onboarding-next" type="button">Get started</button>
+      </div>
+    </section>
+
+    <aside class="panel" id="settings-panel" aria-label="Settings" aria-hidden="true">
+      <div class="panel-head">
+        <h3>Settings</h3>
+        <button class="icon-btn small" id="settings-close" aria-label="Close settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+
+      <div class="panel-body scroll">
+        <section class="set-group">
+          <h4>Theme</h4>
+          <div class="seg" id="theme-seg">
+            <button data-theme-opt="light">Light</button>
+            <button data-theme-opt="dark">Dark</button>
+            <button data-theme-opt="auto">Auto</button>
+          </div>
+        </section>
+
+        <section class="set-group">
+          <h4>Accent color</h4>
+          <div class="swatches" id="swatches"></div>
+        </section>
+
+        <section class="set-group">
+          <h4>Liquid glass</h4>
+          <label class="slider-row">
+            <span>Card opacity</span>
+            <input type="range" id="set-alpha" min="20" max="100" step="1" />
+            <output id="out-alpha"></output>
+          </label>
+          <label class="slider-row">
+            <span>Glass blur</span>
+            <input type="range" id="set-blur" min="0" max="48" step="1" />
+            <output id="out-blur"></output>
+          </label>
+          <label class="toggle-row">
+            <span>Ambient glow</span>
+            <input type="checkbox" id="set-ambient" />
+            <i class="switch" aria-hidden="true"></i>
+          </label>
+        </section>
+
+        <section class="set-group">
+          <h4>Particles</h4>
+          <div class="chips" id="particle-style">
+            <button data-pstyle="off">Off</button>
+            <button data-pstyle="aurora">Aurora</button>
+            <button data-pstyle="lattice">Wave grid</button>
+            <button data-pstyle="flow">Flow field</button>
+            <button data-pstyle="constellation">Constellation</button>
+            <button data-pstyle="comets">Comets</button>
+            <button data-pstyle="ribbons">Ribbons</button>
+            <button data-pstyle="starfield">Starfield</button>
+            <button data-pstyle="fireflies">Fireflies</button>
+          </div>
+          <label class="slider-row">
+            <span>Density</span>
+            <input type="range" id="set-density" min="5" max="100" step="1" />
+            <output id="out-density"></output>
+          </label>
+          <label class="slider-row">
+            <span>Speed</span>
+            <input type="range" id="set-speed" min="5" max="100" step="1" />
+            <output id="out-speed"></output>
+          </label>
+          <label class="slider-row">
+            <span>Size</span>
+            <input type="range" id="set-size" min="5" max="100" step="1" />
+            <output id="out-size"></output>
+          </label>
+          <label class="toggle-row">
+            <span>React to cursor</span>
+            <input type="checkbox" id="set-interact" />
+            <i class="switch" aria-hidden="true"></i>
+          </label>
+        </section>
+
+        <section class="set-group">
+          <h4>Motion effects</h4>
+          <label class="toggle-row">
+            <span>Enable motion effects</span>
+            <input type="checkbox" id="set-motion" />
+            <i class="switch" aria-hidden="true"></i>
+          </label>
+          <label class="slider-row">
+            <span>Sensitivity</span>
+            <input type="range" id="set-msens" min="5" max="100" step="1" />
+            <output id="out-msens"></output>
+          </label>
+          <label class="slider-row">
+            <span>Tap strength</span>
+            <input type="range" id="set-mtap" min="5" max="100" step="1" />
+            <output id="out-mtap"></output>
+          </label>
+          <label class="slider-row">
+            <span>Motion strength</span>
+            <input type="range" id="set-mstr" min="5" max="100" step="1" />
+            <output id="out-mstr"></output>
+          </label>
+          <label class="toggle-row">
+            <span>Reduce motion</span>
+            <input type="checkbox" id="set-mreduce" />
+            <i class="switch" aria-hidden="true"></i>
+          </label>
+          <input class="mini-input" id="set-mws" placeholder="ws://localhost:8765" autocomplete="off"
+            aria-label="Local sensor bridge endpoint" />
+          <p class="set-note" id="motion-status" style="margin: 8px 0 0"></p>
+        </section>
+
+        <section class="set-group">
+          <h4>Google sync</h4>
+          <p class="set-note">
+            Sync the calendar widget with Google Calendar and the tasks widget with Google Tasks.
+            Paste your OAuth client ID (one-time setup — see the README), then connect.
+          </p>
+          <div class="g-rows">
+            <input class="mini-input" id="g-client-id" placeholder="OAuth client ID…" autocomplete="off" />
+            <button class="primary-button" id="g-connect" style="margin-top:0">Connect Google</button>
+            <p class="set-note" id="g-status"></p>
+          </div>
+        </section>
+
+        <section class="set-group">
+          <h4>X timeline</h4>
+          <p class="set-note">
+            Connect your X account to show your reverse-chronological home timeline in the X widget.
+            Import the OAuth 2.0 access and refresh tokens generated in X Developer Console. Credentials stay in browser storage and are never included in a BrowserSlop release.
+          </p>
+          <div class="g-rows">
+            <input class="mini-input" id="x-client-id" placeholder="OAuth client ID…" autocomplete="off" />
+            <input class="mini-input" id="x-client-secret" type="password" placeholder="OAuth client secret…" autocomplete="off" />
+            <input class="mini-input" id="x-access-token" type="password" placeholder="Console access token…" autocomplete="off" />
+            <input class="mini-input" id="x-refresh-token" type="password" placeholder="Console refresh token…" autocomplete="off" />
+            <button class="primary-button" id="x-connect" style="margin-top:0">Connect X</button>
+            <p class="set-note" id="x-status"></p>
+          </div>
+        </section>
+
+        <section class="set-group">
+          <h4>Header</h4>
+          <label class="toggle-row">
+            <span>Show greeting</span>
+            <input type="checkbox" id="set-greeting" />
+            <i class="switch" aria-hidden="true"></i>
+          </label>
+          <label class="toggle-row">
+            <span>Show search bar</span>
+            <input type="checkbox" id="set-search" />
+            <i class="switch" aria-hidden="true"></i>
+          </label>
+        </section>
+
+        <button class="danger-button" id="reset-all">Reset everything</button>
+      </div>
+    </aside>
+
+    <script src="motion.js"></script>
+    <script src="google.js"></script>
+    <script src="x.js"></script>
+    <script src="newtab.js"></script>
+  </body>
+</html>

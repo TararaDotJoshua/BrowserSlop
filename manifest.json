@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "BrowserSlop",
+  "short_name": "BrowserSlop",
+  "version": "1.0.0",
+  "description": "A playful, customizable new-tab dashboard with liquid-glass widgets, focus tools, and optional Google Calendar and Tasks sync.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": ["storage", "identity"],
+  "minimum_chrome_version": "109",
+  "host_permissions": [
+    "https://www.googleapis.com/*",
+    "https://oauth2.googleapis.com/*",
+    "https://x.com/*",
+    "https://api.x.com/*",
+    "http://127.0.0.1:8766/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": ["chatgpt-autosend.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
